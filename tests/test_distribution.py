@@ -97,4 +97,5 @@ class ArchiveTests(unittest.TestCase):
                     "decision_debugger/demo.py",
                     "decision_debugger/cli.py",
                     "decision_debugger/demos/support_tickets.json",
+                    "docs/assets/decision-debugger-overview.svg",
                 })

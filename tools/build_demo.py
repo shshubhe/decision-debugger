@@ -13,6 +13,7 @@ SOURCES = (
     Path("decision_debugger") / "demos" / "support_tickets.json",
     Path("LICENSE"),
     Path("README.md"),
+    Path("docs") / "assets" / "decision-debugger-overview.svg",
 )
 
 

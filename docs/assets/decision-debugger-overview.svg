@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" style="max-width:100%;height:auto" role="img" aria-labelledby="title description">
+  <title id="title">Decision Debugger: customer evidence before a prompt change</title>
+  <desc id="description">An illustrative support-routing workflow: inspect a customer failure, review a small prompt change, and compare two fixes with one billing regression. Overall correctness rises from five of eight to six of eight, but validation remains three of four. These are authored examples, not measured model or business outcomes.</desc>
+  <rect x="1" y="1" width="1098" height="658" rx="24" fill="#F4F7FC" stroke="#D8E2EF"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="40" y="43" font-size="13" font-weight="700" letter-spacing="2" fill="#315A89">CUSTOMER EVIDENCE, NOT JUST A BETTER-SOUNDING PROMPT</text>
+    <text x="40" y="95" font-size="39" font-weight="700" fill="#14253F">Know what your prompt fix helps.</text>
+    <text x="40" y="141" font-size="39" font-weight="700" fill="#14253F">And what it breaks.</text>
+    <text x="40" y="177" font-size="17" fill="#52627A">An illustrative support-routing example for PMs and AI product teams.</text>
+
+    <g id="customer-failure">
+      <rect x="40" y="208" width="316" height="229" rx="16" fill="#FFFFFF" stroke="#D5DFEC"/>
+      <circle cx="70" cy="242" r="16" fill="#315A89"/>
+      <text x="70" y="247" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="97" y="248" font-size="17" font-weight="700" fill="#14253F">Spot a customer failure</text>
+      <text x="62" y="287" font-size="16" fill="#33465F">&quot;The payment page crashes</text>
+      <text x="62" y="310" font-size="16" fill="#33465F">before I can submit my card.&quot;</text>
+      <text x="62" y="347" font-size="15" fill="#52627A">Expected: <tspan font-weight="700" fill="#08785F">TECHNICAL</tspan></text>
+      <text x="62" y="372" font-size="15" fill="#52627A">Saved result: <tspan font-weight="700" fill="#B33727">BILLING</tspan></text>
+      <text x="62" y="410" font-size="14" fill="#52627A">Risk: another wrong-team handoff</text>
+    </g>
+
+    <path d="M362 322H381M377 316L385 322L377 328" fill="none" stroke="#7C8DA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g id="reviewed-change">
+      <rect x="392" y="208" width="316" height="229" rx="16" fill="#FFFFFF" stroke="#D5DFEC"/>
+      <circle cx="422" cy="242" r="16" fill="#08785F"/>
+      <text x="422" y="247" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="449" y="248" font-size="17" font-weight="700" fill="#14253F">Test a small change</text>
+      <text x="414" y="287" font-size="16" fill="#33465F">Payment and error rules overlap.</text>
+      <text x="414" y="310" font-size="16" fill="#33465F">Check wording, review evidence,</text>
+      <text x="414" y="333" font-size="16" fill="#33465F">then approve one minimal edit.</text>
+      <text x="414" y="377" font-size="14" font-weight="700" fill="#08785F">A hypothesis, not hidden reasoning.</text>
+      <text x="414" y="410" font-size="14" fill="#52627A">Make the proposed fix reviewable.</text>
+    </g>
+
+    <path d="M714 322H733M729 316L737 322L729 328" fill="none" stroke="#7C8DA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g id="visible-tradeoffs">
+      <rect x="744" y="208" width="316" height="229" rx="16" fill="#FFFFFF" stroke="#D5DFEC"/>
+      <circle cx="774" cy="242" r="16" fill="#7053A4"/>
+      <text x="774" y="247" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">3</text>
+      <text x="801" y="248" font-size="17" font-weight="700" fill="#14253F">See fixes and regressions</text>
+      <text x="766" y="297" font-size="30" font-weight="700" fill="#08785F">2 fixes</text>
+      <text x="766" y="335" font-size="27" font-weight="700" fill="#B33727">1 regression</text>
+      <text x="766" y="372" font-size="16" fill="#33465F">Overall: 5/8 to 6/8 correct</text>
+      <text x="766" y="397" font-size="15" fill="#52627A">Validation: unchanged at 3/4</text>
+      <text x="766" y="421" font-size="13" fill="#52627A">Keep the customer trade-off visible.</text>
+    </g>
+
+    <rect x="40" y="462" width="1020" height="88" rx="14" fill="#FFF2EE" stroke="#F0CDBF"/>
+    <text x="62" y="487" font-size="12" font-weight="700" letter-spacing="1.5" fill="#A13324">THE REGRESSION THAT MATTERS</text>
+    <text x="62" y="513" font-size="18" font-weight="600" fill="#6F2B24">A duplicate-charge refund is now sent to TECHNICAL instead of BILLING.</text>
+    <text x="62" y="537" font-size="14" fill="#805247">That is a new customer problem, even though the total score increased.</text>
+
+    <rect x="40" y="574" width="1020" height="56" rx="12" fill="#14253F"/>
+    <text x="62" y="608" font-size="13" font-weight="700" letter-spacing="1.4" fill="#ABCEFA">PM VALUE</text>
+    <text x="177" y="608" font-size="19" font-weight="600" fill="#FFFFFF">Make release trade-offs visible before customers experience them.</text>
+    <text x="40" y="649" font-size="12" fill="#52627A">Authored example only. Not a real-model benchmark, measured ROI, or a product dashboard.</text>
+  </g>
+</svg>

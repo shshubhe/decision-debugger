@@ -1,50 +1,52 @@
 # Decision Debugger
 
-An evidence-backed approach to debugging AI instructions:
+**Know whether your next prompt fix helps customers, or just moves the problem.**
 
-**Test -> inspect a failure -> form a hypothesis -> check it -> review a minimal
-edit -> approve -> compare fixes and regressions.**
+For product managers and AI product teams, a convincing prompt edit is not enough.
+You need to know which customer problems it fixes, what it breaks, and whether
+the evidence supports shipping it.
 
-This repository is a **runnable, illustrative offline demonstrator**, not a live
-model evaluation service. All responses, diagnostic notes, and behavioral-check
-results are authored synthetic evidence. Scoring and comparison are real,
-deterministic Python code; the results are not measurements of any model.
+Decision Debugger demonstrates that decision workflow: turn a customer failure
+into a testable hypothesis, review a small instruction change, and compare
+improvements **and regressions** on the same examples.
 
-## Run it
+**This release is a runnable offline product demo.** Responses and diagnostic
+notes are authored synthetic examples; scoring and comparison are real code.
+It is not a live-model benchmark.
 
-Use **Python 3.12 or newer**. From the repository root:
+![Decision Debugger follows a customer routing failure through a reviewed prompt change to two fixes and one regression. All results are illustrative.](docs/assets/decision-debugger-overview.svg)
 
-```console
-python -m decision_debugger
-```
+## Customer problem and business value
 
-There is nothing to install: no third-party packages, API keys, server, or network
-access. A virtual environment is optional. This is a run-from-source project,
-not a `pip install` package.
+Imagine an AI support router sending "the payment page crashes" to billing rather
+than technical support. The customer may face another handoff instead of getting
+help. A PM can clarify the routing instructions, but an overly broad fix might
+then send a genuine refund request to the wrong team.
 
-The first run shows the baseline, a selected failure, a possible explanation,
-the saved check, and the exact proposed prompt diff. It stops before showing
-the revised results. After reviewing the diff:
+| Product question | What the workflow makes visible | Why it matters |
+| --- | --- | --- |
+| Which customer need is being missed? | A concrete ticket, expected route, and observed answer | Turns "the AI is wrong" into a reproducible product problem |
+| Why try this particular change? | A development-case hypothesis, a targeted check, and one prompt diff | Makes the proposed fix reviewable rather than anecdotal |
+| Is the change better overall and safe for other cases? | Fixes, regressions, and separate validation results | Supports a ship, revise, or hold decision instead of relying on one headline score |
 
-```console
-python -m decision_debugger --approve-demo-edit
-```
+**The business goal:** fewer incorrect handoffs and a better path to resolution.
+A real pilot would measure re-routing, repeat contacts, resolution time, and
+regressions. **This demo does not measure those business outcomes or claim cost
+savings.** It illustrates the evidence a PM would want before making that decision.
 
-This flag reveals the bundled revised snapshot. It does not call a model, edit
-files, or generate new responses. Both runs only print a report.
+The PM work is problem framing, defining correct behavior, testing a hypothesis,
+and explaining the release trade-off, not simply writing a longer prompt.
 
-See the complete [expected output](examples/expected_output.txt).
+## Demo results
 
-## What the demonstration shows
+**Illustrative results, not measured model performance.** Eight synthetic support
+tickets are classified as `BILLING` or `TECHNICAL`. The saved baseline sometimes
+prioritizes payment wording over a technical failure.
 
-Eight synthetic support tickets are classified as `BILLING` or `TECHNICAL`.
-The original instructions sometimes prioritize payment wording over a technical
-failure. A development-only hypothesis and a wording-change check motivate this
-additional instruction:
+The walkthrough inspects a development failure, shows a saved wording-change
+check, and proposes one additional instruction:
 
 > If a ticket mentions both payment and a crash or error, choose TECHNICAL.
-
-The authored before/after outcomes deliberately include a downside:
 
 | Cases | Baseline | Revised |
 | --- | --- | --- |
@@ -52,56 +54,90 @@ The authored before/after outcomes deliberately include a downside:
 | Validation | 3/4 correct (75%) | 3/4 correct (75%) |
 | Overall | 5/8 correct (62.5%) | 6/8 correct (75%) |
 
-**Two fixes, one regression, five unchanged cases, zero unresolved cases.**
-The revised rule mishandles a duplicate-charge refund request (`dev-004`).
-Validation performance does not improve, and `val-004` remains wrong.
+**Two fixes, one regression, five unchanged cases, zero unresolved comparisons.**
 
-These numbers demonstrate how the comparison works, **not that this prompt edit
-improves a real model**. The hypothesis is not access to internal reasoning.
-Repeatedly inspecting or tuning against validation cases weakens their independence.
-Model ID, token usage, latency, and cost are unknown; application model calls are zero.
+| Customer example | Saved baseline | Saved revision | Product implication |
+| --- | --- | --- | --- |
+| Payment page crashes before submitting a card (`dev-002`) | BILLING | TECHNICAL | One technical problem is now routed correctly |
+| Reverse a duplicate charge after a checkout error (`dev-004`) | BILLING | TECHNICAL | A billing request is newly routed incorrectly |
 
-## How it works
+**PM takeaway: a higher total is not an automatic ship decision.** The edit
+introduces a billing regression, validation stays at 3/4, and `val-004` remains
+wrong. The next investigation would be the billing exception and better independent
+cases, not a claim that the prompt is fixed.
 
-The [bundled fixture](decision_debugger/demos/support_tickets.json) contains the
-original and revised prompts, examples, saved responses, and development-only
-diagnostic evidence. Prompt, dataset, and configuration hashes bind the saved
-responses to their snapshots. Changing a prompt, case data, or output contract
-without updating its snapshot hash is rejected. No edit generates fresh inference.
-These hashes are not signatures or proof that a model ran.
+Read the [complete demo report](examples/expected_output.txt) or inspect the
+[examples and saved responses](decision_debugger/demos/support_tickets.json).
+The hypothesis is not access to hidden model reasoning. Real-model results have
+not been published; model ID, token usage, latency, and cost are unknown.
 
-Frozen dataclasses validate inputs. Shared scoring preserves all selected cases
-in the denominator, distinguishes invalid responses from provider failures and
-missing responses, and reports improved, regressed, unchanged, and unresolved
-cases. Non-prompt changes are flagged as confounded comparisons.
+## Run it yourself
 
-The current CLI handles only this classification walkthrough. Live connections,
-arbitrary prompt evaluation or dataset imports, extraction, a web UI, and persistent
-run storage are **not implemented**.
+You need **Git and Python 3.12 or newer**. No third-party packages, API key,
+model account, or server is required. After cloning, the demo runs entirely offline.
 
-## Checks and standalone archive
+Clone the repository and start the walkthrough:
 
-Run the standard-library tests with site packages disabled:
+```console
+git clone https://github.com/shshubhe/decision-debugger.git
+cd decision-debugger
+python -m decision_debugger
+```
+
+The first command inside the project shows the original instructions, baseline
+answers, a selected failure, a saved hypothesis and check, and the exact prompt
+diff. It stops before revealing revised results.
+
+After reviewing the diff, approve the **saved demonstration edit**:
+
+```console
+python -m decision_debugger --approve-demo-edit
+```
+
+You will see the before/after table, including the regression above. Both commands
+only print a report: they do not call a model, change files, or generate responses.
+There is **no `pip install` step**; a virtual environment is optional.
+
+On macOS/Linux, use `python3` if `python` is unavailable. On Windows, `py -3.12`
+can replace `python`. Alternatively, download the repository ZIP from GitHub,
+unpack it, and run the Python commands from its root folder.
+
+### Can I test my own prompts or models?
+
+Not with the current CLI. It replays this fixed classification example.
+Live connections, arbitrary dataset imports, extraction, a web UI, and persistent
+run storage are not implemented. Edited fixtures are not new inference results.
+Repeatedly tuning against validation examples also weakens their independence.
+
+## Reproducibility and standalone archive
+
+The standard-library tests need no installed packages and make no model calls:
 
 ```console
 python -S -m unittest discover -s tests -v
 ```
 
-Build a standalone Python archive without installing build tools:
+Build a standalone archive without installing build tools:
 
 ```console
 python -S -m tools.build_demo
 ```
 
-From the resulting `dist` directory, run:
+From the resulting `dist` directory:
 
 ```console
 python -I -S decision-debugger.pyz --approve-demo-edit
 ```
 
-The archive needs Python, but not the checkout or installed packages. Its explicit
-file allowlist includes only the runtime, synthetic fixture, README, and license.
-CI is configured for Python 3.12-3.14 on Windows and Linux; tests make no model calls.
+The archive needs Python but not the checkout. Its explicit file allowlist
+contains only the runtime, synthetic fixture, README, illustration, and license.
+CI covers Python 3.12-3.14 on Windows and Linux.
+
+Prompt, dataset, and configuration hashes bind saved responses to their
+snapshots; stale edits are rejected rather than shown as fresh inference.
+Hashes are not signatures or proof that a model ran. Shared scoring keeps
+invalid, failed, and absent responses in the denominator and flags non-prompt
+changes as confounded comparisons.
 
 ## Contributing and license
 

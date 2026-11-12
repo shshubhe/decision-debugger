@@ -21,6 +21,7 @@ Fixtures must remain synthetic and explicitly illustrative. Do not invent model
 identifiers, usage, latency, or cost, or describe authored outcomes as measured
 improvements. A changed fixture needs consistent versioned snapshots and an
 updated expected-output sample, not just a changed answer to make a test pass.
+Keep README result tables and the product illustration consistent with the fixture.
 Use development cases for diagnostic evidence; preserve the validation split.
 
 Do not add network requests, credentials, or live inference to ordinary tests or
