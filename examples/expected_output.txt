@@ -1,0 +1,80 @@
+DECISION DEBUGGER
+Illustrative demonstration - authored synthetic evidence, not live inference.
+No credentials or network access. No real model was evaluated.
+
+1. ORIGINAL INSTRUCTIONS
+Classify the support ticket as BILLING or TECHNICAL.
+Choose BILLING for payments, invoices, or charges.
+Choose TECHNICAL for crashes, error messages, or broken functionality.
+Return only one label.
+
+2. BASELINE (bundled responses, scored deterministically)
+Baseline: 5/8 correct (62.5%)
+Invalid: 0; provider failures: 0; absent: 0
+  development: 2/4
+  validation: 3/4
+
+Case      Split        Expected    Saved output Result
+dev-001   development  BILLING     BILLING      correct
+dev-002   development  TECHNICAL   BILLING      incorrect
+dev-003   development  TECHNICAL   BILLING      incorrect
+dev-004   development  BILLING     BILLING      correct
+val-001   validation   BILLING     BILLING      correct
+val-002   validation   TECHNICAL   TECHNICAL    correct
+val-003   validation   BILLING     BILLING      correct
+val-004   validation   TECHNICAL   BILLING      incorrect
+
+3. INSPECT A DEVELOPMENT FAILURE: dev-002
+Input: The payment page crashes before I can submit my card.
+Expected: TECHNICAL; saved output: BILLING
+Possible cause: The original rules overlap when a payment-related ticket describes broken functionality. Payment wording may dominate the saved outputs.
+Evidence [dev-002]: The ticket describes a crash before payment, but its saved label is BILLING.
+Evidence [dev-001]: A straightforward duplicate-charge request is correctly labeled BILLING.
+Uncertainty: This is an authored hypothesis, not a finding about a real model. Ambiguous expected answers or response variation are alternative explanations.
+
+4. TARGETED BEHAVIORAL CHECK (saved illustration, not a new request)
+Does removing payment wording change the answer while retaining the crash?
+Changed input: The page crashes before I can submit the form.
+Proposed expected answer: TECHNICAL
+Authored check output: TECHNICAL
+Check matches proposed answer: yes
+This contrast illustrates a testable hypothesis; it does not prove a cause.
+
+5. REVIEW THE EXACT PROPOSED EDIT
+--- baseline
++++ revised
+@@ -2,3 +2,4 @@
+ Choose BILLING for payments, invoices, or charges.
+ Choose TECHNICAL for crashes, error messages, or broken functionality.
+ Return only one label.
++If a ticket mentions both payment and a crash or error, choose TECHNICAL.
+Regression risk: A refund request that also mentions an error could be incorrectly sent to TECHNICAL.
+
+6. APPROVED REPLAY AND COMPARISON
+Approved revised prompt SHA-256: e9f9681b989ef1ab026bcb44676951af14959b84ebc434d94d3c69c63bd7b676
+Revised: 6/8 correct (75.0%)
+Invalid: 0; provider failures: 0; absent: 0
+  development: 3/4
+  validation: 3/4
+Improved: 2  Regressed: 1  Unchanged: 5  Unresolved: 0
+
+Case      Baseline     Revised      Change
+dev-001   BILLING      BILLING      unchanged
+dev-002   BILLING      TECHNICAL    improved
+dev-003   BILLING      TECHNICAL    improved
+dev-004   BILLING      TECHNICAL    regressed
+val-001   BILLING      BILLING      unchanged
+val-002   TECHNICAL    TECHNICAL    unchanged
+val-003   BILLING      BILLING      unchanged
+val-004   BILLING      BILLING      unchanged
+
+Confounded: no
+The original prompt and both snapshots are preserved.
+These authored outcomes are not measured improvements or generalization evidence.
+Repeated inspection/tuning weakens validation independence.
+
+Dataset: support-demo-v1
+Dataset SHA-256: c2d012c7757af5dc206a75fbe8e4b63e47e531a7c74e180fb8acbc4ce30ccea5
+Scoring: exact-v1
+Provenance: illustrative; model ID, token usage, and latency are unknown.
+Model calls: 0. Cost unavailable.

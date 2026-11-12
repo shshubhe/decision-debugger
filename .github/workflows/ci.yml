@@ -1,0 +1,31 @@
+name: Offline checks
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Test without site packages
+        run: python -S -m unittest discover -s tests -v
+      - name: Preview the proposed edit
+        run: python -m decision_debugger
+      - name: Replay the approved example
+        run: python -m decision_debugger --approve-demo-edit
+      - name: Build the allowlisted archive
+        run: python -S -m tools.build_demo
+      - name: Run the standalone archive
+        working-directory: dist
+        run: python -I -S decision-debugger.pyz --approve-demo-edit

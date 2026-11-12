@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "provenance": "illustrative",
+  "task": {
+    "name": "Synthetic support-ticket routing",
+    "description": "Distinguish billing requests from broken application functionality.",
+    "labels": ["BILLING", "TECHNICAL"],
+    "dataset_version": "support-demo-v1",
+    "normalization": "exact-v1"
+  },
+  "dataset_sha256": "c2d012c7757af5dc206a75fbe8e4b63e47e531a7c74e180fb8acbc4ce30ccea5",
+  "configuration_sha256": "6fd58051acb88c2d0c567729e0c3263a7b2fb38b1e575a9cee5e0d94d217b8fd",
+  "cases": [
+    {
+      "id": "dev-001",
+      "input_text": "I was charged twice for this month's subscription.",
+      "expected": "BILLING",
+      "split": "development"
+    },
+    {
+      "id": "dev-002",
+      "input_text": "The payment page crashes before I can submit my card.",
+      "expected": "TECHNICAL",
+      "split": "development"
+    },
+    {
+      "id": "dev-003",
+      "input_text": "I paid, but the app won't open and shows an error.",
+      "expected": "TECHNICAL",
+      "split": "development"
+    },
+    {
+      "id": "dev-004",
+      "input_text": "The checkout shows an error after charging my card twice. Please reverse the extra charge.",
+      "expected": "BILLING",
+      "split": "development"
+    },
+    {
+      "id": "val-001",
+      "input_text": "Please email me a copy of last month's invoice.",
+      "expected": "BILLING",
+      "split": "validation"
+    },
+    {
+      "id": "val-002",
+      "input_text": "The app crashes whenever I open Settings.",
+      "expected": "TECHNICAL",
+      "split": "validation"
+    },
+    {
+      "id": "val-003",
+      "input_text": "I need a refund for an accidental subscription renewal.",
+      "expected": "BILLING",
+      "split": "validation"
+    },
+    {
+      "id": "val-004",
+      "input_text": "My saved card disappeared from the payment form.",
+      "expected": "TECHNICAL",
+      "split": "validation"
+    }
+  ],
+  "baseline": {
+    "id": "support-baseline-v1",
+    "prompt": "Classify the support ticket as BILLING or TECHNICAL.\nChoose BILLING for payments, invoices, or charges.\nChoose TECHNICAL for crashes, error messages, or broken functionality.\nReturn only one label.",
+    "prompt_sha256": "d0d60d6d5117292a484c734687bcce5be798414fbbae5bd864e9bd802f7c83c7",
+    "outputs": {
+      "dev-001": "BILLING",
+      "dev-002": "BILLING",
+      "dev-003": "BILLING",
+      "dev-004": "BILLING",
+      "val-001": "BILLING",
+      "val-002": "TECHNICAL",
+      "val-003": "BILLING",
+      "val-004": "BILLING"
+    }
+  },
+  "revised": {
+    "id": "support-revised-v2",
+    "prompt": "Classify the support ticket as BILLING or TECHNICAL.\nChoose BILLING for payments, invoices, or charges.\nChoose TECHNICAL for crashes, error messages, or broken functionality.\nReturn only one label.\nIf a ticket mentions both payment and a crash or error, choose TECHNICAL.",
+    "prompt_sha256": "e9f9681b989ef1ab026bcb44676951af14959b84ebc434d94d3c69c63bd7b676",
+    "outputs": {
+      "dev-001": "BILLING",
+      "dev-002": "TECHNICAL",
+      "dev-003": "TECHNICAL",
+      "dev-004": "TECHNICAL",
+      "val-001": "BILLING",
+      "val-002": "TECHNICAL",
+      "val-003": "BILLING",
+      "val-004": "BILLING"
+    }
+  },
+  "diagnosis": {
+    "possible_cause": "The original rules overlap when a payment-related ticket describes broken functionality. Payment wording may dominate the saved outputs.",
+    "evidence": [
+      {
+        "case_id": "dev-002",
+        "note": "The ticket describes a crash before payment, but its saved label is BILLING."
+      },
+      {
+        "case_id": "dev-001",
+        "note": "A straightforward duplicate-charge request is correctly labeled BILLING."
+      }
+    ],
+    "uncertainty": "This is an authored hypothesis, not a finding about a real model. Ambiguous expected answers or response variation are alternative explanations.",
+    "regression_risks": "A refund request that also mentions an error could be incorrectly sent to TECHNICAL."
+  },
+  "check": {
+    "source_case_id": "dev-002",
+    "question": "Does removing payment wording change the answer while retaining the crash?",
+    "input_text": "The page crashes before I can submit the form.",
+    "expected": "TECHNICAL",
+    "baseline_output": "TECHNICAL"
+  },
+  "metadata": {
+    "model_id": null,
+    "token_usage": null,
+    "latency_ms": null,
+    "cost": null
+  }
+}
