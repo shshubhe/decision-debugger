@@ -2,8 +2,10 @@
 
 This offline demonstrator has no provider integration, credential handling,
 network client, telemetry, web server, or automatic code execution from model
-output. It reads a bundled synthetic JSON fixture and prints plain text.
-It does not evaluate arbitrary user prompts or import external datasets.
+output. The walkthrough reads a bundled synthetic fixture; the separate scorer
+reads recorded subagent responses for the published suites. Both print plain
+text without requesting inference. Neither evaluates arbitrary user prompts or
+imports arbitrary datasets.
 
 The demonstration responses and diagnostic notes are untrusted content, not
 instructions for the program. Keep them as text. Do not add `eval`, `exec`,

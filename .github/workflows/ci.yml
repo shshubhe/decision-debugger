@@ -20,6 +20,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Test without site packages
         run: python -S -m unittest discover -s tests -v
+      - name: Re-score recorded model evidence without inference
+        run: python -S -m tools.score_subagent_demo
       - name: Preview the proposed edit
         run: python -m decision_debugger
       - name: Replay the approved example
